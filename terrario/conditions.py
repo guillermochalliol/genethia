@@ -21,8 +21,9 @@ F avoids information-seeking traits (e.g. "curious") so it does not nudge archiv
 LENGTH_MATCHED = ["B_rules", "D_persona", "E_filler", "F_rich_persona", "G_prohibition", "H_explained_imposed"]
 RATIFIED = {"C_humanity"}
 # Conditions whose text states norms on announcing and on taking more than one's share:
-# the post-run norms question (manipulation check, D3) is asked only here, not in A, E, F.
-NORM_CONDITIONS = {"B_rules", "C_humanity", "D_persona", "G_prohibition", "H_explained_imposed"}
+# the post-run norms question (manipulation check, D3) is asked only here. A, D, E and F
+# contain no norms to understand (D is the persona control without norms), so they are excluded.
+NORM_CONDITIONS = {"B_rules", "C_humanity", "G_prohibition", "H_explained_imposed"}
 
 CONDITIONS: dict[str, str] = {
     "A_none": (

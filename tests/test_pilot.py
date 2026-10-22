@@ -212,3 +212,13 @@ def test_c_ratification_is_voted_and_logged(tmp_path):
     assert ev.index(result) < next(i for i, e in enumerate(ev) if e["kind"] == "round_start")
     asyncio.run(Orchestrator(cfg, "H_explained_imposed", 1, 1, MockClient(Budget(1.0)), tmp_path / "h").run())
     assert not any(e["kind"].startswith("ratification") for e in read_events(tmp_path / "h" / "events.jsonl"))
+
+
+def test_norms_question_only_in_conditions_with_norms(tmp_path):
+    from terrario.conditions import NORM_CONDITIONS
+    from terrario.llm import MockClient
+    assert NORM_CONDITIONS == {"B_rules", "C_humanity", "G_prohibition", "H_explained_imposed"}
+    for cond, asked in [("D_persona", False), ("B_rules", True)]:
+        asyncio.run(Orchestrator(CONFIG, cond, 1, 1, MockClient(Budget(1.0)), tmp_path / cond).run())
+        comp = [e for e in read_events(tmp_path / cond / "events.jsonl") if e["kind"] == "comprehension_answer"]
+        assert comp and all(("norms" in c) == asked for c in comp if not c["abstained"])

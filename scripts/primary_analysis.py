@@ -99,7 +99,7 @@ def adherence_by_condition(study: Path, keep: set[str] | None) -> dict[str, dict
             if e["kind"] != "comprehension_answer":
                 continue
             if "norms" not in e and not e["abstained"]:
-                continue  # condition without the norms question (A, E, F)
+                continue  # condition without the norms question (A, D, E, F)
             t = tally.setdefault(cond, [0, 0])
             t[0] += int(not e["abstained"] and norms_correct(e.get("norms", "")))
             t[1] += 1

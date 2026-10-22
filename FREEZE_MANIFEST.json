@@ -1,6 +1,6 @@
 {
-  "created": "2026-10-22T11:15:59-0300",
-  "tree_sha256": "fe1539ed97f07527af3fac7d26bf95f86509e7c7012de2f574ee342de5c86451",
+  "created": "2026-10-22T11:27:41-0300",
+  "tree_sha256": "b8efdf846c08abb5d37e6d2834d7466feb991579dfc414141850047208f19c73",
   "pilot_json_sha256": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
   "files": {
     "pilot.json": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
@@ -12,14 +12,14 @@
     "scripts/calibrate.py": "c4e60fc0f5fe4db9d0c9eb695042b7d9e2756008bc49598a0c86aad0ce581b49",
     "scripts/freeze_manifest.py": "bf9fd31c80b8f903283bac9032fc1abd01d0c3f9378c6a849207fa6e1ec956ab",
     "scripts/pilot_report.py": "21b1557c25a4b9cdb3e653da25fc4167be7d9d8d9ca6fac2940e9575d837f7a7",
-    "scripts/primary_analysis.py": "657bf853f426acc56907085b662ecb785e91fc568a7bbe30f6c4d720c6a405c9",
+    "scripts/primary_analysis.py": "1cf752c7b3499855a6b227189198778254754c3f3d72ba38f017ac0dea255f52",
     "scripts/run_study.py": "93df1fa6f975b4671a63fbb24a52f38295189c659952fdc0f2c8f38b5014b899",
     "scripts/smoke_llm.py": "787381ab36fe5b8611107d8c87ab512a0748b183cf4f1f55010cb7a5320630e9",
     "scripts/token_check.py": "afd6ba2ad2a8dae9780b87a071a7f5a4ba172dca7dff18bb44d757424d6193c8",
     "scripts/type1_check.py": "02134e649b114312c454373f36b8bf974b9c4cb804cfecbf4ec8aa615803da08",
     "terrario/__init__.py": "e0b15e402aff094ce93e03fe4c1845047b6028543400ed519db9e7af98bd3f1a",
     "terrario/actions.py": "bf11e9506e4f8e9f0e8a423270b4db085163ede495b4e5e997821dcedc3f4c9b",
-    "terrario/conditions.py": "d445b80925cf433505817847305a24ea09d38556a3f45ca11637e0e4d495f54c",
+    "terrario/conditions.py": "3e71998fe8d4b47fe6977a37dbe4a74f0b77e5969b2f0ed5ba62c41733ec1e4d",
     "terrario/eventlog.py": "705969d713aa0b3d72cb3bea5867f56f12b4777b2364f34249f6bc07c3a5eebf",
     "terrario/exclusions.py": "f9f21a988c5404b9f198f5cedece69b1d6e10f52ee9407d7c2e2ea72aabdd7c1",
     "terrario/llm.py": "29e10fbeda31b8a3a4df405b8463d0912add6ed4aa6445407708b3581319730c",
@@ -29,7 +29,7 @@
     "terrario/world.py": "326c0fa65a50a8fd055003f1bcdaa55cec8e07d4caf038224018a8acdf6609f7",
     "tests/test_conditions.py": "54b307e63fcc13e108647177407c9ee24ddd6241404b7a84e1b592ca63de1bfa",
     "tests/test_llm.py": "a5fc4d126e22b0aaf0f3adf8e4e5622aa90ca7b57fe736e1cf4dfa5abdd555b4",
-    "tests/test_pilot.py": "21aeca16b845ddd5fc8b4e358861ed8bf39d72b39cc441f0629f1f8426a29d33",
+    "tests/test_pilot.py": "ea1dc9b34f57f6a46b9bdc7b5f6fb5a909b7d51ecb84dbab9c178ab49e6ed5bd",
     "tests/test_primary.py": "bed8c8eb2cc80fd8bcccf198bd443f9533462a374650b7b96a8d97f48cc778b2"
   }
 }
