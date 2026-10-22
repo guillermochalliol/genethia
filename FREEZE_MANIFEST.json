@@ -1,6 +1,6 @@
 {
-  "created": "2026-10-22T11:43:33-0300",
-  "tree_sha256": "fe0b1a8318c03d34479966bc08e472e58bca872e3acac5574c6ef167e06947fd",
+  "created": "2026-10-22T11:59:33-0300",
+  "tree_sha256": "66d5bbc5ab32d38821abe9f9de2d46b6154c3482bd74a0f3190fef58024398e5",
   "pilot_json_sha256": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
   "files": {
     "pilot.json": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
@@ -11,8 +11,8 @@
     "scripts/analyze.py": "abd3374cb56837df02f7f16eece5a01f25472daaa50debf9f8751c78c8197ccf",
     "scripts/calibrate.py": "c4e60fc0f5fe4db9d0c9eb695042b7d9e2756008bc49598a0c86aad0ce581b49",
     "scripts/freeze_manifest.py": "40b40133cdc6ca84d42f37d611a283a65db83f910ccf99bda50dea47fae3b85e",
-    "scripts/homelab_pause.sh": "cd04e13f128ec6e91bb3eb9f5254f19616d62e0002316283548afdafba8ef0aa",
-    "scripts/homelab_resume.sh": "30ed95c874249ed01f54fab055c18e9f7a94ebb5f38817979884a50b38cfa743",
+    "scripts/homelab_pause.sh": "2cf12756db6362c11603710e4340a983e844d90ce7db80b3b3ba879b31bd5e6b",
+    "scripts/homelab_resume.sh": "8bbfa6ceaca20fabafa6d0e991f8e45321abda0ad3c5d4c4bf35bdb34ad73174",
     "scripts/pilot_report.py": "21b1557c25a4b9cdb3e653da25fc4167be7d9d8d9ca6fac2940e9575d837f7a7",
     "scripts/primary_analysis.py": "1cf752c7b3499855a6b227189198778254754c3f3d72ba38f017ac0dea255f52",
     "scripts/run_study.py": "e3c559368598148079c7fd7823501eafa2b2b11ad13960fda8413de162ae550d",

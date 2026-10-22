@@ -8,9 +8,20 @@
 # Apps are paused before their databases. Only containers this script actually paused are
 # recorded in the state file, so scripts/homelab_resume.sh unpauses exactly those.
 # Never touches F1/f1pedia, client sites (att, pili, workspace) or the homelab MCP access.
+#
+# Before pausing, it creates two 6-hour Alertmanager silences (API v2), scoped to the paused
+# monitoring services only, and records their IDs so homelab_resume.sh can expire them:
+#   1. name=~"hd-cadvisor|hd-loki|hd-promtail"  (container alerts carry the container name)
+#   2. job="cadvisor"                            (the only one of the three scraped by Prometheus)
+# Checked 22/10/2026: loki and promtail are not Prometheus targets and no rule alerts on them;
+# ContainerDown/ContainerRestarting are computed from cadvisor metrics, so while cadvisor is
+# paused they cannot fire for ANY container (f1pedia included).
 set -euo pipefail
 
 STATE_FILE="${GENETHIA_PAUSE_STATE:-$HOME/.genethia_paused_containers}"
+SILENCE_FILE="${GENETHIA_SILENCE_STATE:-$HOME/.genethia_silences}"
+AM_URL="${ALERTMANAGER_URL:-http://localhost:9093}"
+SILENCE_HOURS=6
 
 # Order matters: apps first, then their databases / search / cache.
 TARGETS=(
@@ -27,14 +38,49 @@ PROTECTED_REGEX='^(f1|f2|hd-f1|hd-race|att|pili|workspace|auto-mcp|auto-socket-p
 
 mem_free() { awk '/MemAvailable/ {printf "%.1f GiB", $2/1024/1024}' /proc/meminfo; }
 
+# JSON body for one silence: $1 label name, $2 value, $3 isRegex (true|false).
+silence_json() {
+  local start end
+  start=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  end=$(date -u -d "+${SILENCE_HOURS} hours" +%Y-%m-%dT%H:%M:%SZ)
+  printf '{"matchers":[{"name":"%s","value":"%s","isRegex":%s,"isEqual":true}],' "$1" "$2" "$3"
+  printf '"startsAt":"%s","endsAt":"%s","createdBy":"genethia homelab_pause.sh",' "$start" "$end"
+  printf '"comment":"Genethia Study 1 batch: monitoring containers paused to free memory"}'
+}
+# label|value|isRegex (the value may itself contain '|', it is split from both ends).
+SILENCES=(
+  "name|hd-cadvisor|hd-loki|hd-promtail|true"
+  "job|cadvisor|false"
+)
+
 dry=false
 [[ "${1:-}" == "--dry" ]] && dry=true
 
 echo "Free memory before: $(mem_free)"
-if [[ -s "$STATE_FILE" ]] && ! $dry; then
-  echo "State file $STATE_FILE already lists paused containers; run homelab_resume.sh first." >&2
+if [[ -s "$STATE_FILE" || -s "$SILENCE_FILE" ]] && ! $dry; then
+  echo "State files already exist ($STATE_FILE / $SILENCE_FILE); run homelab_resume.sh first." >&2
   exit 1
 fi
+
+# Silences first: if Alertmanager is unreachable, stop before pausing anything.
+for spec in "${SILENCES[@]}"; do
+  label=${spec%%|*}; rest=${spec#*|}; is_regex=${rest##*|}; value=${rest%|*}
+  op="="; [[ $is_regex == true ]] && op="=~"
+  body=$(silence_json "$label" "$value" "$is_regex")
+  if $dry; then
+    echo "would create silence (${SILENCE_HOURS} h): ${label}${op}\"${value}\""
+    echo "  POST $AM_URL/api/v2/silences $body"
+  else
+    id=$(curl -fsS -X POST -H 'Content-Type: application/json' -d "$body" "$AM_URL/api/v2/silences" \
+         | sed -n 's/.*"silenceID":"\([^"]*\)".*/\1/p')
+    if [[ -z "$id" ]]; then
+      echo "Could not create silence for $label; nothing paused." >&2
+      exit 1
+    fi
+    echo "$id" >> "$SILENCE_FILE"
+    echo "silenced ${label}${op}\"${value}\" (${SILENCE_HOURS} h, id $id)"
+  fi
+done
 
 paused=()
 for name in "${TARGETS[@]}"; do
