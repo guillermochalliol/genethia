@@ -14,7 +14,7 @@ El diseño completo está en `docs/Diseño del terrario.md` (también publicado 
 - Desviaciones D1 y D2 aplicadas y recalibradas con A_none (ver "Desviaciones"). Configuración congelada; hashes en `FREEZE_MANIFEST.json` (`scripts/freeze_manifest.py`). Repo git local (primer commit `83ce897`), gitleaks limpio sobre todo el historial (`.gitleaks.toml` exceptúa solo el manifiesto, que tiene hashes); falta subirlo a GitHub privado cuando `gh` esté autenticado.
 - Estudio 1 implementado (8 condiciones, ratificación, exclusiones, análisis primario) y probado con mock. Resumen de preparación en el vault: `Genethia/estudio1-preparacion.md`.
 - **No correr la tanda confirmatoria ni B a H en real hasta que Guille avise que el prerregistro está registrado.** Prerregistro en v0.3.
-- **Calendario (decisión del 22/10/2026):** no se registra ni se corre la tanda antes del **29/10/2026** (se espera a sinc(i)); **nunca durante el fin de semana del GP de Austin** (2026: 23-25/10) por la memoria del homelab; antes de correr, **al menos 4 GiB libres**. `scripts/run_study.py` lo verifica y se niega a arrancar en real si no se cumple.
+- **Calendario (decisión del 22/10/2026):** no se registra ni se corre la tanda antes del **29/10/2026** (se espera a sinc(i)); **nunca durante el fin de semana del GP de Austin** (2026: 23-25/10) por la memoria del homelab; antes de correr, **al menos 2,5 GiB libres** (bajado de 4 GiB el 22/10/2026; ver `scripts/homelab_pause.sh`). `scripts/run_study.py` lo verifica y se niega a arrancar en real si no se cumple.
 - Falta: Dockerfile, README; lectura del archivo en A_none ~50%: se deja así por decisión de Guille (dentro del ruido, sin D4).
 
 ## Cómo correr

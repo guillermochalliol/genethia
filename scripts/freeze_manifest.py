@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PATTERNS = ["pilot.json", "run_pilot.py", "requirements*.txt", "terrario/*.py", "scripts/*.py", "tests/*.py"]
+PATTERNS = ["pilot.json", "run_pilot.py", "requirements*.txt", "terrario/*.py", "scripts/*.py", "scripts/*.sh", "tests/*.py"]
 
 
 def main() -> None:

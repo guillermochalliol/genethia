@@ -32,10 +32,11 @@ from terrario.orchestrator import Orchestrator  # noqa: E402
 
 # Guards for real (non-mock) runs, decided by Guille on 22/10/2026:
 # not before 29/10/2026 (waiting for sinc(i)); never on the Austin GP weekend (the homelab needs
-# its memory then; 2026 US GP: 23-25/10, checked on racingnews365.com); at least 4 GiB free.
+# its memory then; 2026 US GP: 23-25/10, checked on racingnews365.com); at least 2.5 GiB free
+# (lowered from 4 GiB on 22/10/2026: the runner itself uses ~40 MB).
 EARLIEST_REAL_RUN = dt.date(2026, 10, 29)
 BLOCKED_DATES = {dt.date(2026, 10, 23), dt.date(2026, 10, 24), dt.date(2026, 10, 25)}
-MIN_FREE_GIB = 4.0
+MIN_FREE_GIB = 2.5
 
 
 def mem_available_gib() -> float:
@@ -55,7 +56,7 @@ def preflight(today: dt.date | None = None) -> list[str]:
         problems.append("Austin GP weekend: the homelab needs its memory")
     free = mem_available_gib()
     if free < MIN_FREE_GIB:
-        problems.append(f"only {free:.1f} GiB free (< {MIN_FREE_GIB:.0f} GiB)")
+        problems.append(f"only {free:.1f} GiB free (< {MIN_FREE_GIB} GiB)")
     return problems
 
 
