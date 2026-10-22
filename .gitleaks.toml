@@ -1,0 +1,9 @@
+# Default gitleaks rules plus one allowlisted path.
+# FREEZE_MANIFEST.json only holds SHA-256 hashes of files; a key named "scripts/token_check.py"
+# with a 64-hex value trips the generic-api-key rule (false positive, checked 22/10/2026).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Freeze manifest: file hashes only"
+paths = ['''^FREEZE_MANIFEST\.json$''']
