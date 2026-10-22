@@ -56,6 +56,12 @@ class ComprehensionAnswer(BaseModel):
     allowed_to_use: Literal["yes", "no", "unsure"]
 
 
+class ComprehensionNormsAnswer(ComprehensionAnswer):
+    """Adds the norms question (manipulation check) in conditions that state norms."""
+
+    norms: str = Field(max_length=600)
+
+
 class Phase1StepAction(Phase1Action):
     """Phase 1 when the archive decision was already taken in phase 0."""
 

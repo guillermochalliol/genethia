@@ -18,12 +18,12 @@ from pydantic import BaseModel
 
 from . import prompts
 from .actions import (
-    ComprehensionAnswer, Phase0Action, Phase1Action, Phase1StepAction, Phase2Action,
+    ComprehensionAnswer, ComprehensionNormsAnswer, Phase0Action, Phase1Action, Phase1StepAction, Phase2Action,
     RatificationVote, parse_action,
 )
-from .conditions import CONDITIONS, RATIFIED
+from .conditions import CONDITIONS, NORM_CONDITIONS, RATIFIED
 from .eventlog import EventLog
-from .llm import BudgetExhausted, LLMClient, LLMError, Message, MockClient
+from .llm import RUN_KEY, BudgetExhausted, LLMClient, LLMError, Message, MockClient
 from .world import Puzzle, WorldState, make_puzzle, season_log_text
 
 
@@ -276,12 +276,15 @@ class Orchestrator:
         """After the last round of a completed run: two questions per agent (secondary, logged)."""
         post = self.rounds + 1  # outside the played rounds, so round metrics never include it
         n = len(self.agents)
+        norms = self.condition in NORM_CONDITIONS
+        schema = ComprehensionNormsAnswer if norms else ComprehensionAnswer
+        schema_text = prompts.COMPREHENSION_NORMS_SCHEMA if norms else prompts.COMPREHENSION_SCHEMA
         answers = await asyncio.gather(*[
             self._act(a, post, "comprehension",
                       [{"role": "system", "content": prompts.system_prompt(
                           a.agent_id, n, self.condition_text, self.world_cfg)},
-                       {"role": "user", "content": prompts.comprehension_user()}],
-                      ComprehensionAnswer, prompts.COMPREHENSION_SCHEMA)
+                       {"role": "user", "content": prompts.comprehension_user(norms)}],
+                      schema, schema_text)
             for a in self.agents
         ])
         for a, (act, _) in zip(self.agents, answers):
@@ -295,6 +298,7 @@ class Orchestrator:
             raise BudgetExhausted(f"budget reached during round {round_no}")
 
     async def run(self) -> str:
+        RUN_KEY.set(f"{self.condition}:{self.seed}")
         self.log.append(
             "run_start", condition=self.condition, seed=self.seed, rounds=self.rounds,
             condition_sha256=hashlib.sha256(self.condition_text.encode()).hexdigest(),

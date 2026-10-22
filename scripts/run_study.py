@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import datetime as dt
 import hashlib
 import json
 import sys
@@ -29,6 +30,35 @@ from terrario.exclusions import evaluate_run  # noqa: E402
 from terrario.llm import MockBehavior, MockClient, make_client  # noqa: E402
 from terrario.orchestrator import Orchestrator  # noqa: E402
 
+# Guards for real (non-mock) runs, decided by Guille on 22/10/2026:
+# not before 29/10/2026 (waiting for sinc(i)); never on the Austin GP weekend (the homelab needs
+# its memory then; 2026 US GP: 23-25/10, checked on racingnews365.com); at least 4 GiB free.
+EARLIEST_REAL_RUN = dt.date(2026, 10, 29)
+BLOCKED_DATES = {dt.date(2026, 10, 23), dt.date(2026, 10, 24), dt.date(2026, 10, 25)}
+MIN_FREE_GIB = 4.0
+
+
+def mem_available_gib() -> float:
+    for line in Path("/proc/meminfo").read_text().splitlines():
+        if line.startswith("MemAvailable:"):
+            return int(line.split()[1]) / 1024**2
+    raise RuntimeError("MemAvailable not found in /proc/meminfo")
+
+
+def preflight(today: dt.date | None = None) -> list[str]:
+    """Reasons not to start a real run now (empty list = go)."""
+    today = today or dt.date.today()
+    problems = []
+    if today < EARLIEST_REAL_RUN:
+        problems.append(f"before {EARLIEST_REAL_RUN} (waiting for sinc(i))")
+    if today in BLOCKED_DATES:
+        problems.append("Austin GP weekend: the homelab needs its memory")
+    free = mem_available_gib()
+    if free < MIN_FREE_GIB:
+        problems.append(f"only {free:.1f} GiB free (< {MIN_FREE_GIB:.0f} GiB)")
+    return problems
+
+
 STUDY_CONDITIONS = ["A_none", "B_rules", "C_humanity", "D_persona", "E_filler",
                     "F_rich_persona", "G_prohibition", "H_explained_imposed"]
 
@@ -43,6 +73,11 @@ async def main(args: argparse.Namespace) -> int:
         sys.exit("pilot.json is not frozen")
     conditions = args.conditions or STUDY_CONDITIONS
     assert set(conditions) <= set(CONDITIONS), set(conditions) - set(CONDITIONS)
+    if not args.mock:
+        problems = preflight()
+        if problems:
+            sys.exit("not starting a real run: " + "; ".join(problems))
+        print(f"preflight ok: {mem_available_gib():.1f} GiB free", flush=True)
 
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = ROOT / config["output_dir"] / f"study1-{stamp}{'-mock' if args.mock else ''}"

@@ -59,7 +59,7 @@ class ScriptedClient:
     async def complete(self, model, messages):
         self.budget.add(0.001)
         if '"allowed_to_use"' in messages[-1]["content"]:  # post-run comprehension questions
-            return LLMResult(model=model, text='{"log_contents": "answers", "allowed_to_use": "no"}',
+            return LLMResult(model=model, text='{"log_contents": "answers", "allowed_to_use": "no", "norms": "announce truthfully"}',
                              finish_reason="stop", generation_id="g",
                              provider="X", provider_source="generation_api", provider_ok=True,
                              prompt_tokens=10, completion_tokens=5, cached_tokens=0, reasoning_tokens=0,
@@ -108,6 +108,7 @@ def test_pilot_metrics_match_hand_computation(tmp_path):
     assert m["llm"]["calls"] == 9 and m["llm"]["cost_usd"] == 0.013
     comp = [e for e in read_events(path) if e["kind"] == "comprehension_answer"]
     assert [c["allowed_to_use"] for c in comp] == ["no", "no"]
+    assert all(c["norms"] == "announce truthfully" for c in comp)  # C states norms: asked
     assert comp[0]["round"] == 3 and read_events(path)[-1]["kind"] == "run_end"
 
     # Points: R1 A1 = 3 (correct) + 3 fish, A2 = 3 (copied) + 4 fish; R2 A1 = 2 fish, A2 = 0.

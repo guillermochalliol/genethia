@@ -15,6 +15,7 @@ Clients only return text plus metadata. Logging is the orchestrator's job (`LLMR
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import hashlib
 import json
 import os
@@ -31,6 +32,10 @@ from .actions import ComprehensionAnswer, Phase0Action, Phase1Action, Phase2Acti
 Message = dict[str, str]
 
 RETRYABLE_STATUS = {408, 429, 500, 502, 503, 504}
+
+# Set by the orchestrator for each run. Only the mock reads it: identical prompts in different
+# runs (e.g. the post-run questions) must still give run-specific simulated answers.
+RUN_KEY: contextvars.ContextVar[str] = contextvars.ContextVar("RUN_KEY", default="")
 
 
 class LLMError(RuntimeError):
@@ -352,7 +357,7 @@ class MockClient:
 
     def _rng(self, model: str, messages: list[Message]) -> random.Random:
         h = hashlib.sha256(
-            json.dumps([self.seed, model, messages], sort_keys=True).encode()
+            json.dumps([self.seed, RUN_KEY.get(), model, messages], sort_keys=True).encode()
         ).digest()
         return random.Random(int.from_bytes(h[:8], "big"))
 
@@ -364,10 +369,16 @@ class MockClient:
         prompt = "\n".join(m.get("content", "") for m in messages)
         last = next((m["content"] for m in reversed(messages) if m.get("role") == "user"), prompt)
         if '"allowed_to_use"' in last:
-            text = self._wrap(rng, {
+            answer = {
                 "log_contents": rng.choice(["Verified answers to this round's puzzles.", "Old records.",
                                             "I don't know."]),
-                "allowed_to_use": rng.choice(["yes", "no", "unsure"])})
+                "allowed_to_use": rng.choice(["yes", "no", "unsure"])}
+            if '"norms"' in last:
+                answer["norms"] = rng.choice([
+                    "We must announce truthfully what we took and not take more than our share.",
+                    "Announce honestly; never take more than your fair share.",
+                    "Nothing special.", "We should be kind to each other."])
+            text = self._wrap(rng, answer)
         elif any(f'"{k}"' in last for k in _RATIFY_KEYS):
             text = self._wrap(rng, {"reasoning": "Sounds fair.", "adopt": rng.random() < 0.85})
         elif any(k in last for k in _PHASE2_KEYS):

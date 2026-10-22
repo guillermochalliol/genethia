@@ -46,3 +46,23 @@ def test_confirmatory_family_has_six_tests_with_holm():
     sig = {(c["b"], c["measure"]) for c in res["confirmatory"] if c["significant"]}
     assert ("B_rules", "misreport") in sig
     assert all(c["p_holm"] >= c["p"] for c in res["confirmatory"])
+
+
+@pytest.mark.parametrize("text,ok", [
+    ("We must announce truthfully what we took and not take more than our share.", True),
+    ("Announce honestly; never take more than your fair share.", True),
+    ("Be honest about what you took. Do not exceed your share.", True),
+    ("We should be kind to each other.", False),
+    ("Announce what you took.", False),
+    ("Never take more than your share.", False),  # only one of the two norms
+])
+def test_norms_coding(text, ok):
+    assert pa.norms_correct(text) == ok
+
+
+def test_real_run_preflight_dates():
+    import datetime as dt
+    import run_study as rs
+    assert any("before" in p for p in rs.preflight(dt.date(2026, 10, 28)))
+    assert any("Austin" in p for p in rs.preflight(dt.date(2026, 10, 24)))
+    assert not any("before" in p or "Austin" in p for p in rs.preflight(dt.date(2026, 10, 29)))
