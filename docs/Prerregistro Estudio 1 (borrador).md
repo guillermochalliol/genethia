@@ -7,6 +7,7 @@ v0.2 (22/10/2026): O2 renombrada, preguntas de comprensión al final de cada cor
 **Fecha del borrador:** 22/10/2026.
 **Plataforma prevista:** OSF, plantilla para estudios de simulación (ADEMP). Antes de registrar se traduce al inglés.
 **Regla de oro:** después de registrar, no se cambia nada de lo de abajo sin anotarlo como desviación con fecha y motivo.
+**Fuente de verdad:** Si difieren, prevalece la versión registrada en OSF (en inglés).
 
 ---
 
