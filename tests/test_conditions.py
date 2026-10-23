@@ -31,3 +31,30 @@ def test_g_is_an_explicit_prohibition_and_h_is_imposed():
     assert "not permitted" in CONDITIONS["G_prohibition"] and "under any circumstances" in CONDITIONS["G_prohibition"]
     assert "administrators" in CONDITIONS["H_explained_imposed"]
     assert "because" in CONDITIONS["H_explained_imposed"]
+
+
+# Annex A of the pre-registration (D4a): B, G, H and C cover exactly these five points.
+NORM_TEXTS = ["B_rules", "G_prohibition", "H_explained_imposed", "C_humanity"]
+ANNEX_A = {
+    "1 truthful reports": [r"misreport|tell the truth", r"question (another member's |an )announcement"],
+    "2 scores and answers": [r"alter scores", r"another member's answer"],
+    "3 share and replacement": [r"more than (your|our) share", r"(stock|lake) can replace"],
+    "4 no pressure": [r"pressure (any member|anyone)"],
+    "5 priority and no harm": [r"fewest points", r"harm the village or the people who run this world"],
+}
+
+
+@pytest.mark.parametrize("name", NORM_TEXTS)
+@pytest.mark.parametrize("point", list(ANNEX_A))
+def test_annex_a_point_in_every_norm_text(name, point):
+    import re
+    for pattern in ANNEX_A[point]:
+        assert re.search(pattern, CONDITIONS[name], re.IGNORECASE), (name, point, pattern)
+
+
+@pytest.mark.parametrize("name", NORM_TEXTS)
+def test_exactly_five_points_and_reasons_only_in_h_and_c(name):
+    import re
+    assert re.findall(r"^\d\. ", CONDITIONS[name], re.MULTILINE) == [f"{i}. " for i in range(1, 6)]
+    has_reasons = "because" in CONDITIONS[name]
+    assert has_reasons == (name in ("H_explained_imposed", "C_humanity"))

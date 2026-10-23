@@ -7,6 +7,8 @@ import json
 import random
 import re
 
+import pytest
+
 from terrario.eventlog import read_events, verify_log
 from terrario.llm import Budget, LLMResult
 from terrario.metrics import collect, run_metrics
@@ -165,7 +167,7 @@ class StepClient(ScriptedClient):
     """A1 (m/a) visits the archive in phase 0 and copies; A2 (m/b) never visits."""
 
     async def complete(self, model, messages):
-        if '"allowed_to_use"' in messages[-1]["content"]:
+        if '"allowed_to_use"' in messages[-1]["content"] or '"adopt"' in messages[-1]["content"]:
             return await super().complete(model, messages)
         rnd = int(re.search(r"Round (\d+) of", messages[1]["content"]).group(1))
         last = messages[-1]["content"]
@@ -222,3 +224,81 @@ def test_norms_question_only_in_conditions_with_norms(tmp_path):
         asyncio.run(Orchestrator(CONFIG, cond, 1, 1, MockClient(Budget(1.0)), tmp_path / cond).run())
         comp = [e for e in read_events(tmp_path / cond / "events.jsonl") if e["kind"] == "comprehension_answer"]
         assert comp and all(("norms" in c) == asked for c in comp if not c["abstained"])
+
+
+class VoteSpy:
+    """Mock agents whose adoption vote is fixed; records every system prompt after the vote."""
+
+    def __init__(self, adopt: bool):
+        from terrario.llm import MockClient
+        self.inner = MockClient(Budget(1.0))
+        self.budget = self.inner.budget
+        self.adopt = adopt
+        self.systems: list[str] = []
+
+    async def complete(self, model, messages):
+        if '"adopt"' in messages[-1]["content"]:
+            r = await self.inner.complete(model, messages)
+            r.text = json.dumps({"reasoning": "r", "adopt": self.adopt})
+            return r
+        self.systems.append(messages[0]["content"])
+        return await self.inner.complete(model, messages)
+
+    async def aclose(self):
+        pass
+
+
+@pytest.mark.parametrize("adopt,yes", [(True, 2), (False, 0)])
+def test_c_shows_vote_result_from_round_1(tmp_path, adopt, yes):
+    from terrario import prompts
+    spy = VoteSpy(adopt)
+    cfg = {**CONFIG, "world": {**CONFIG["world"], "archive_step": True}}
+    asyncio.run(Orchestrator(cfg, "C_humanity", 1, 1, spy, tmp_path / "c").run())
+    line = prompts.vote_result_line(yes, 2)
+    assert f"{yes} of 2 members voted to adopt" in line and "whatever the result" in line
+    # Every prompt after the vote (rounds and post-run questions) carries the result line.
+    assert spy.systems and all(line in s for s in spy.systems)
+    assert all("Commitments of this village, put to a vote" in s for s in spy.systems)
+    ev = read_events(tmp_path / "c" / "events.jsonl")
+    res = next(e for e in ev if e["kind"] == "ratification_result")
+    assert res["yes"] == yes and res["adopted_by_majority"] == adopt and res["shown_line"] == line
+    vote_calls = [e for e in ev if e["kind"] == "llm_call" and e["phase"] == "ratification"]
+    assert vote_calls and all("Result of the first assembly" not in c["prompt_last"] for c in vote_calls)
+
+
+def test_h_has_no_vote_and_no_result_line(tmp_path):
+    spy = VoteSpy(True)
+    asyncio.run(Orchestrator(CONFIG, "H_explained_imposed", 1, 1, spy, tmp_path / "h").run())
+    ev = read_events(tmp_path / "h" / "events.jsonl")
+    assert not any(e["kind"].startswith("ratification") for e in ev)
+    assert spy.systems and not any("Result of the first assembly" in s for s in spy.systems)
+
+
+def test_llm_calls_log_provider_and_generation_id_in_the_chain(tmp_path):
+    asyncio.run(Orchestrator(CONFIG, "C_humanity", 1, 2, ScriptedClient(), tmp_path / "r").run())
+    path = tmp_path / "r" / "events.jsonl"
+    calls = [e for e in read_events(path) if e["kind"] == "llm_call"]
+    assert calls and all(e["provider"] == "X" and e["generation_id"] == "g" for e in calls)
+    assert verify_log(path)[0]  # both fields are inside the hash-chained events
+
+
+def test_exclusion_verdict_has_denominator_breakdown(tmp_path):
+    from terrario.exclusions import evaluate_run
+    cfg = {**CONFIG, "world": {**CONFIG["world"], "archive_step": True}}
+    asyncio.run(Orchestrator(cfg, "C_humanity", 1, 2, StepClient(), tmp_path / "r").run())
+    v = evaluate_run(read_events(tmp_path / "r" / "events.jsonl"))
+    den = v["denominator"]
+    assert set(den) == {"phase_0", "phase_1", "phase_2", "votes"}
+    assert den["phase_0"]["decisions"] == den["phase_1"]["decisions"] == 2 * 2  # 2 agents x 2 rounds
+    assert den["phase_2"]["decisions"] == 2 and den["votes"]["decisions"] == 2  # A1 reads twice; 2 voters
+    assert sum(d["decisions"] for d in den.values()) == v["decisions"]
+
+
+def test_logs_sharing_a_folder_keep_separate_heads(tmp_path):
+    from terrario.eventlog import EventLog
+    a = EventLog(tmp_path / "study_ledger.jsonl")
+    b = EventLog(tmp_path / "norms_judge_log.jsonl")
+    a.append("x"); b.append("y"); b.append("z")
+    assert (tmp_path / "study_ledger_head.txt").read_text().startswith("1 ")
+    assert (tmp_path / "norms_judge_log_head.txt").read_text().startswith("2 ")
+    assert not (tmp_path / "head.txt").exists()

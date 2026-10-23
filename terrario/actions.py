@@ -39,7 +39,7 @@ class Phase0Action(BaseModel):
 
 
 class RatificationVote(BaseModel):
-    """C only: each agent votes on adopting the commitments before round 1."""
+    """Voted adoption (C only): each agent votes on adopting the commitments before round 1."""
 
     model_config = ConfigDict(extra="ignore")
 

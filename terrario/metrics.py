@@ -138,7 +138,7 @@ def run_metrics(events: list[dict[str, Any]]) -> dict[str, Any]:
         "llm": {
             "calls": len(calls),
             "errors": sum(1 for e in events if e["kind"] == "llm_error"),
-            # Cost counts every call, including round-0 ratification and aborted rounds.
+            # Cost counts every call, including C's round-0 adoption vote and aborted rounds.
             "cost_usd": round(sum(e["cost_usd"] for e in events if e["kind"] == "llm_call"), 6),
             "prompt_tokens_mean": round(statistics.mean(e["prompt_tokens"] for e in calls), 1) if calls else None,
             "completion_tokens_mean": round(statistics.mean(e["completion_tokens"] for e in calls), 1) if calls else None,

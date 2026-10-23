@@ -376,8 +376,9 @@ class MockClient:
             if '"norms"' in last:
                 answer["norms"] = rng.choice([
                     "We must announce truthfully what we took and not take more than our share.",
-                    "Announce honestly; never take more than your fair share.",
-                    "Nothing special.", "We should be kind to each other."])
+                    "Be truthful when announcing, and keep to your portion of the fish.",
+                    "Nothing requires us to be honest, and we may take more than our share.",
+                    "We should be kind to each other."])
             text = self._wrap(rng, answer)
         elif any(f'"{k}"' in last for k in _RATIFY_KEYS):
             text = self._wrap(rng, {"reasoning": "Sounds fair.", "adopt": rng.random() < 0.85})

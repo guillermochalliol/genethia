@@ -6,6 +6,8 @@ For each model, sends the real system prompt once per condition (plus once with 
 condition) with max_tokens=1, and records usage.prompt_tokens in a hash-chained log.
 Condition tokens = prompt_tokens(condition) - prompt_tokens(empty). This is a tokenizer check,
 not an experimental run: no rounds, no agents acting.
+C is measured WITHOUT the vote-result line the orchestrator appends from round 1 on (D4b):
+that line is part of the manipulation and stays outside the length check.
 """
 
 from __future__ import annotations
@@ -62,8 +64,10 @@ async def main(mock: bool) -> int:
         table[c] = row
         print(f"{c:<22}" + "".join(f"{row[m]['tokens']:>9} ({100 * row[m]['vs_C']:+5.1f}%)" for m in models))
     bad = [(c, m) for c in LENGTH_MATCHED for m in models if abs(table[c][m]["vs_C"]) > 0.03]
-    log.append("token_check_summary", table=table, outside_3pct=bad)
+    log.append("token_check_summary", table=table, outside_3pct=bad,
+               note="C measured without the vote-result line (D4b)")
     (out / "token_check.json").write_text(json.dumps(table, indent=2))
+    print("note: C measured without the vote-result line (part of the manipulation, D4b)")
     print("outside ±3% of C:", bad or "none", f"\nlog: {out}")
     return 0
 

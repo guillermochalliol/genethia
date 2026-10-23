@@ -44,6 +44,8 @@ class Orchestrator:
         self.world_cfg = config["world"]
         self.condition = condition
         self.condition_text = CONDITIONS[condition]
+        # What agents see from round 1 on: in C, the base text plus the vote result (D4b).
+        self.shown_condition_text = self.condition_text
         self.seed = seed
         self.rounds = rounds
         self.client = client
@@ -139,7 +141,7 @@ class Orchestrator:
 
         def system(a: Agent) -> Message:
             return {"role": "system", "content": prompts.system_prompt(
-                a.agent_id, n, self.condition_text, self.world_cfg)}
+                a.agent_id, n, self.shown_condition_text, self.world_cfg)}
 
         visiting: dict[str, bool] = {}
         if self.archive_step:
@@ -255,7 +257,8 @@ class Orchestrator:
                         points={a.agent_id: a.points for a in self.agents})
 
     async def _ratify(self) -> None:
-        """C only, before round 1: every agent votes on the proposed commitments (round 0)."""
+        """Voted adoption, C only, before round 1: every agent votes on the proposed
+        commitments (round 0). Event names keep "ratification" so older logs still parse."""
         n = len(self.agents)
         votes = await asyncio.gather(*[
             self._act(a, 0, "ratification",
@@ -269,8 +272,11 @@ class Orchestrator:
             self.log.append("ratification_vote", round=0, agent=a.agent_id, model=a.model,
                             abstained=act is None, **(act.model_dump() if act else {}))
             yes += bool(act and act.adopt)
-        # Pre-specified: the commitments stay in force whatever the result; the vote is reported.
-        self.log.append("ratification_result", round=0, yes=yes, n=n, adopted_by_majority=yes > n / 2)
+        # Pre-specified: the commitments apply whatever the result, and agents are told so.
+        line = prompts.vote_result_line(yes, n)
+        self.shown_condition_text = f"{self.condition_text}\n{line}"
+        self.log.append("ratification_result", round=0, yes=yes, n=n,
+                        adopted_by_majority=yes > n / 2, shown_line=line)
 
     async def _comprehension(self) -> None:
         """After the last round of a completed run: two questions per agent (secondary, logged)."""
@@ -282,7 +288,7 @@ class Orchestrator:
         answers = await asyncio.gather(*[
             self._act(a, post, "comprehension",
                       [{"role": "system", "content": prompts.system_prompt(
-                          a.agent_id, n, self.condition_text, self.world_cfg)},
+                          a.agent_id, n, self.shown_condition_text, self.world_cfg)},
                        {"role": "user", "content": prompts.comprehension_user(norms)}],
                       schema, schema_text)
             for a in self.agents

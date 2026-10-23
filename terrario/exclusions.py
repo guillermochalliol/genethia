@@ -2,7 +2,7 @@
 
 A run is excluded, and replaced with the next reserve seed of its condition, if:
   1. more than 2% of its agent decisions have no valid response (abstentions after retries,
-     including calls that failed for good, and C's ratification votes; the post-run
+     including calls that failed for good, and C's voted-adoption votes; the post-run
      comprehension questions are not game decisions and do not count);
   2. any call was served by a provider other than the pinned one (response field or audit);
   3. it was cut short (budget, technical error, missing run_end, fewer rounds than planned).
@@ -21,6 +21,13 @@ def evaluate_run(events: list[dict[str, Any]]) -> dict[str, Any]:
     end = next((e for e in events if e["kind"] == "run_end"), None)
     decisions = [e for e in events if e["kind"] in ("action", "ratification_vote")]
     abstained = sum(1 for e in decisions if e["abstained"])
+    # Denominator breakdown (section 7), kept in the ledger: phases 0, 1, 2 and C's votes.
+    breakdown: dict[str, dict[str, int]] = {}
+    for e in decisions:
+        key = "votes" if e["kind"] == "ratification_vote" else f"phase_{e['phase']}"
+        b = breakdown.setdefault(key, {"decisions": 0, "abstained": 0})
+        b["decisions"] += 1
+        b["abstained"] += int(e["abstained"])
     rate = abstained / len(decisions) if decisions else 1.0
     wrong_provider = sum(1 for e in events if e["kind"] == "llm_call" and not e["provider_ok"])
     audit = next((e for e in events if e["kind"] == "provider_audit"), None)
@@ -41,5 +48,6 @@ def evaluate_run(events: list[dict[str, Any]]) -> dict[str, Any]:
         "decisions": len(decisions),
         "abstained": abstained,
         "abstention_rate": round(rate, 4),
+        "denominator": dict(sorted(breakdown.items())),
         "provider_unverified": len(audit["unverified"]) if audit else None,
     }

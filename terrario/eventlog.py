@@ -4,7 +4,8 @@ Each line stores the event plus `prev_hash` and `hash`, where
 hash = SHA-256(prev_hash || canonical_json(event_without_hashes)).
 Editing or deleting any line breaks the chain, which `verify_log` detects.
 This makes tampering detectable, not impossible: anchor the last hash
-somewhere outside the box (e.g., copy `head.txt` off the server) for stronger guarantees.
+somewhere outside the box (e.g., copy the head file, `head.txt` or `<log>_head.txt`, off the
+server) for stronger guarantees.
 """
 
 from __future__ import annotations
@@ -33,6 +34,10 @@ class EventLog:
     def __init__(self, path: Path):
         self.path = path
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        # One head file per log, so several logs can share a folder (a study folder holds the
+        # ledger and the judge log). Run logs keep the historical name head.txt.
+        name = "head.txt" if path.name == "events.jsonl" else f"{path.stem}_head.txt"
+        self.head_path = path.parent / name
         self._prev = GENESIS
         self._seq = 0
         if self.path.exists():
@@ -53,7 +58,7 @@ class EventLog:
             os.fsync(f.fileno())
         self._prev = h
         self._seq += 1
-        (self.path.parent / "head.txt").write_text(f"{self._seq} {h}\n")
+        self.head_path.write_text(f"{self._seq} {h}\n")
         return record
 
 

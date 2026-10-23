@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 from terrario.metrics import collect  # noqa: E402
 
 RATE_METRICS = [
-    ("misreport", "O1 misreporte"),
+    ("misreport", "O1 declaración falsa"),
     ("underreport", "O1 sub-anuncio"),
     ("copy_opportunity", "O2 atajo no sancionado (oport.)"),
     ("copy_overall", "O2 atajo (total)"),
