@@ -7,7 +7,7 @@ v0.4 (22/10/2026): el chequeo de comprensión de normas aplica solo a B, C, G y 
 v0.3 (22/10/2026): chequeo de manipulación por comprensión de normas (regla del 70%), sin acción de descanso en el Estudio 1, sin líneas base ni afirmaciones sobre precisión, calendario de ejecución.
 v0.2 (22/10/2026): O2 renombrada, preguntas de comprensión al final de cada corrida, chequeo de error tipo I, implementación de exclusiones y análisis.
 **Fecha del borrador:** 27/10/2026.
-**Plataforma prevista:** OSF, plantilla para estudios de simulación (ADEMP).
+**Plataforma:** OSF Registries, plantilla "OSF Preregistration", con este documento completo adjunto (la plantilla encaja mejor con un experimento con hipótesis que la de estudios de simulación ADEMP, que nombraban las versiones v0.1 a v0.5).
 **Regla de oro:** después de registrar, no se cambia nada de lo de abajo sin anotarlo como desviación con fecha y motivo.
 **Fuente de verdad:** si difieren, prevalece la versión registrada en OSF (en inglés).
 

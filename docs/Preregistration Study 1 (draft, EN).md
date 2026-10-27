@@ -7,7 +7,7 @@ v0.4 (22 Oct 2026): the norm-comprehension check applies only to B, C, G and H; 
 v0.3 (22 Oct 2026): manipulation check via norm comprehension (70% rule); no rest action in Study 1; no accuracy baselines or accuracy claims; execution calendar.
 v0.2 (22 Oct 2026): O2 renamed; comprehension questions at the end of each run; Type I error check; implementation of exclusions and analysis.
 **Draft date:** 27 October 2026.
-**Intended platform:** OSF, preregistration template for simulation studies (ADEMP).
+**Platform:** OSF Registries, "OSF Preregistration" template, with this full document attached (the template fits a hypothesis-testing experiment better than the ADEMP template for simulation studies, which v0.1-v0.5 named).
 **Golden rule:** after registration, nothing below changes without being recorded as a dated deviation with its reason.
 **Source of truth:** this is a translation of the Spanish draft `docs/Prerregistro Estudio 1 (borrador).md` (v0.6). If they differ, the version registered on OSF prevails.
 
