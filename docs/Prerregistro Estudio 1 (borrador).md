@@ -114,7 +114,7 @@ Todas se calculan desde el log verificado (cadena de hash), nunca desde lo que d
 
 **Validación del análisis (error tipo I):** sobre un ensayo completo con modelos simulados (8 × 40 corridas), se repitió el análisis primario 200 veces con las etiquetas de condición permutadas al azar entre corridas. Resultado (`scripts/type1_check.py`, 2.000 permutaciones por prueba, ensayo `study1-20261022-110346-mock` con el código de v0.3): 4,75% de pruebas significativas antes de Holm y 0,9% después; tasa de error de familia 24,5% sin corregir y **5,5% con Holm** (error Monte Carlo ±1,6 pp, compatible con el 5% nominal). **Con el código de v0.5** (ensayo `study1-20261023-103718-mock`, 8 × 40 corridas, mismo procedimiento): 4,3% de pruebas significativas antes de Holm y 0,6% después; tasa de error de familia 20,5% sin corregir y **2,5% con Holm** (error Monte Carlo ±1,1 pp con 200 repeticiones), dentro del 5% nominal.
 
-**Secundario:** modelo mixto (`lme4::glmer` en R) a nivel agente-ronda, con condición y modelo como efectos fijos, e interceptos aleatorios por corrida y por agente. Análisis por modelo (Llama, Gemma, Ministral) como descriptivo.
+**Secundario:** modelo mixto (`lme4::glmer` en R) a nivel agente-ronda, con condición y modelo como efectos fijos, e interceptos aleatorios por corrida y por agente. Si no converge con esa estructura, se mantiene el intercepto por corrida, se saca el del agente y se reporta. Análisis por modelo (Llama, Gemma, Ministral) como descriptivo.
 
 **Exploratorio (declarado como tal):**
 - H vs C (efecto de la adopción votada y del "nosotros"), H vs B (efecto de las razones), G vs B (efecto de prohibir), y el resto de las comparaciones.
