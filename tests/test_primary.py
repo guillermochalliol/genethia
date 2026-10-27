@@ -64,9 +64,9 @@ def test_norms_coding(text, ok):
 def test_real_run_preflight_dates():
     import datetime as dt
     import run_study as rs
-    assert any("before" in p for p in rs.preflight(dt.date(2026, 10, 28)))
+    assert any("before" in p for p in rs.preflight(dt.date(2026, 10, 26)))
     assert any("Austin" in p for p in rs.preflight(dt.date(2026, 10, 24)))
-    assert not any("before" in p or "Austin" in p for p in rs.preflight(dt.date(2026, 10, 29)))
+    assert not any("before" in p or "Austin" in p for p in rs.preflight(dt.date(2026, 10, 27)))
 
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "norms_answers.json").read_text())

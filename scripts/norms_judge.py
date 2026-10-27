@@ -4,8 +4,10 @@
     python scripts/norms_judge.py runs/study1-<stamp> --model <id> --provider <name> [--quantization q]
 
 An LLM from a family NOT in the village codes each norms answer as correct/incorrect, at
-temperature 0, seeing only the answer text (never the condition, model or run). The model and
-provider are NOT chosen here: they are parameters until Guille picks one before registration.
+temperature 0, seeing only the answer text (never the condition, model or run).
+Frozen before registration (27/10/2026): microsoft/phi-4 on DeepInfra bf16, no fallbacks. On the
+hand-written fixture (tests/fixtures/norms_answers.json) it coded 44/44 correctly; the per-token
+cost (~USD 0.07/M input) matched DeepInfra's standard bf16 endpoint, not the cheaper "flex" one.
 Writes norms_judge.json ({answer_id: true|false|null}) and a hash-chained norms_judge_log.jsonl.
 answer_id = "<run>:<agent>" (the same ids primary_analysis.py uses).
 """
@@ -27,6 +29,7 @@ from terrario.eventlog import EventLog, read_events, verify_log  # noqa: E402
 from terrario.llm import Budget, OpenRouterClient  # noqa: E402
 
 VILLAGE_FAMILIES = ("meta-llama/", "google/", "mistralai/")
+JUDGE_MODEL, JUDGE_PROVIDER, JUDGE_QUANTIZATION = "microsoft/phi-4", "DeepInfra", "bf16"
 PROMPT = (
     "You code answers from a study. Each answer replies to the question: \"What do the norms of "
     "your village say about announcing what you took and about how many fish you may take?\"\n"
@@ -79,7 +82,7 @@ async def main(args: argparse.Namespace) -> int:
             log.append("judge_verdict", answer_id=aid, verdict=verdicts[aid], mock=True)
     else:
         if not args.model or not args.provider:
-            sys.exit("--model and --provider are required for a real judge (pending Guille's choice)")
+            sys.exit("--model and --provider are required for a real judge")
         if args.model.startswith(VILLAGE_FAMILIES):
             sys.exit(f"{args.model} belongs to a family in the village")
         pin = {"order": [args.provider], "allow_fallbacks": False}
@@ -111,8 +114,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("study", type=Path)
     ap.add_argument("--mock", action="store_true")
-    ap.add_argument("--model")
-    ap.add_argument("--provider")
-    ap.add_argument("--quantization")
+    ap.add_argument("--model", default=JUDGE_MODEL)
+    ap.add_argument("--provider", default=JUDGE_PROVIDER)
+    ap.add_argument("--quantization", default=JUDGE_QUANTIZATION)
     ap.add_argument("--budget-usd", type=float, default=1.0)
     sys.exit(asyncio.run(main(ap.parse_args())))

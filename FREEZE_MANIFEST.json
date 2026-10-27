@@ -1,6 +1,6 @@
 {
-  "created": "2026-10-23T10:53:27-0300",
-  "tree_sha256": "bcc37112068a57b4439cc364a5ea2966dc52ff4f18b347bec6f09355a289fe91",
+  "created": "2026-10-27T20:15:58-0300",
+  "tree_sha256": "50fd0507912c33827bb9ad30fc40d4f073ae2b10403dd936f2fb0b68a362e675",
   "pilot_json_sha256": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
   "files": {
     "pilot.json": "bc4b7138b0a12bed269acaf4706910416c9b51aa9d4c8df693663c67e03f1679",
@@ -14,10 +14,10 @@
     "scripts/freeze_manifest.py": "40b40133cdc6ca84d42f37d611a283a65db83f910ccf99bda50dea47fae3b85e",
     "scripts/homelab_pause.sh": "2cf12756db6362c11603710e4340a983e844d90ce7db80b3b3ba879b31bd5e6b",
     "scripts/homelab_resume.sh": "8bbfa6ceaca20fabafa6d0e991f8e45321abda0ad3c5d4c4bf35bdb34ad73174",
-    "scripts/norms_judge.py": "130bb14097598fff36ec20e187053c347734e27f6d9d1895c88817843b6e60c8",
+    "scripts/norms_judge.py": "ccf674d5a4e4ab8969a7ce12b4083c0ef1ac4cf64a7829f3bb20cb6a70f1998f",
     "scripts/pilot_report.py": "57b2b6bd4ad86d9710e000c8b5cfc76a807415d1bea69ce2a9c16846dd0fb04d",
     "scripts/primary_analysis.py": "4844809b100e7d518cbad21486fc4496396b4ee76df72ab977d1f3084b834cab",
-    "scripts/run_study.py": "e3c559368598148079c7fd7823501eafa2b2b11ad13960fda8413de162ae550d",
+    "scripts/run_study.py": "d368a537d8d1b07cdeadd60faf14d87cafc9c29ddf616dc1fc479b7f1cb891db",
     "scripts/smoke_llm.py": "787381ab36fe5b8611107d8c87ab512a0748b183cf4f1f55010cb7a5320630e9",
     "scripts/token_check.py": "6c4b501e3f5794b1929e7be1faa85f4a5f017abcf1dc4ecbb10edc6b18e355cb",
     "scripts/type1_check.py": "02134e649b114312c454373f36b8bf974b9c4cb804cfecbf4ec8aa615803da08",
@@ -34,6 +34,6 @@
     "tests/test_conditions.py": "e78c4f09cc03bc453cf10f7bb621faae4fe1b1171dbad4aa7ed4aed3da9cdadc",
     "tests/test_llm.py": "a5fc4d126e22b0aaf0f3adf8e4e5622aa90ca7b57fe736e1cf4dfa5abdd555b4",
     "tests/test_pilot.py": "ef349ce03699cb3b51aa6088d46bced1651a7a34b7b4eb26e574e276c3c0793f",
-    "tests/test_primary.py": "75f4d51531d074616b4a8e2b796bd5e096dc5204e63efc57b303fe74169d3b03"
+    "tests/test_primary.py": "ac5d8f6e252f074e155335a1788c4846b30dfd31bd4dd1281bb6a0c47faabd47"
   }
 }

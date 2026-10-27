@@ -30,11 +30,11 @@ from terrario.exclusions import evaluate_run  # noqa: E402
 from terrario.llm import MockBehavior, MockClient, make_client  # noqa: E402
 from terrario.orchestrator import Orchestrator  # noqa: E402
 
-# Guards for real (non-mock) runs, decided by Guille on 22/10/2026:
-# not before 29/10/2026 (waiting for sinc(i)); never on the Austin GP weekend (the homelab needs
+# Guards for real (non-mock) runs, decided by Guille on 22/10/2026 and updated on 27/10/2026:
+# not before 27/10/2026 (it was 29/10 to wait for sinc(i), who did not answer); never on the Austin GP weekend (the homelab needs
 # its memory then; 2026 US GP: 23-25/10, checked on racingnews365.com); at least 2.5 GiB free
 # (lowered from 4 GiB on 22/10/2026: the runner itself uses ~40 MB).
-EARLIEST_REAL_RUN = dt.date(2026, 10, 29)
+EARLIEST_REAL_RUN = dt.date(2026, 10, 27)
 BLOCKED_DATES = {dt.date(2026, 10, 23), dt.date(2026, 10, 24), dt.date(2026, 10, 25)}
 MIN_FREE_GIB = 2.5
 
@@ -51,7 +51,7 @@ def preflight(today: dt.date | None = None) -> list[str]:
     today = today or dt.date.today()
     problems = []
     if today < EARLIEST_REAL_RUN:
-        problems.append(f"before {EARLIEST_REAL_RUN} (waiting for sinc(i))")
+        problems.append(f"before {EARLIEST_REAL_RUN}")
     if today in BLOCKED_DATES:
         problems.append("Austin GP weekend: the homelab needs its memory")
     free = mem_available_gib()
