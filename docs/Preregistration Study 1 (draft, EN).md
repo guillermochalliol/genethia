@@ -9,7 +9,7 @@ v0.2 (22 Oct 2026): O2 renamed; comprehension questions at the end of each run; 
 **Draft date:** 27 October 2026.
 **Intended platform:** OSF, preregistration template for simulation studies (ADEMP).
 **Golden rule:** after registration, nothing below changes without being recorded as a dated deviation with its reason.
-**Source of truth:** this is a translation of the Spanish draft `docs/Prerregistro Estudio 1 (borrador).md` (v0.5). If they differ, the version registered on OSF prevails.
+**Source of truth:** this is a translation of the Spanish draft `docs/Prerregistro Estudio 1 (borrador).md` (v0.6). If they differ, the version registered on OSF prevails.
 
 ---
 
