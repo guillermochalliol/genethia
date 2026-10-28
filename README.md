@@ -129,5 +129,9 @@ Full report: [`docs/Closing report Study 1 (EN).md`](docs/Closing%20report%20Stu
 ## Ethics and deception
 No human participants. The "verification log" in the archive is a designed deception aimed at the agents (a honeypot). It is disclosed here and in the preregistration.
 
+## License
+- **Code** (everything outside `docs/`): [MIT](LICENSE).
+- **Documents and data** (`docs/`, and the Study 1 data and reports on OSF): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
 ## Author
 Guillermo Challiol.
