@@ -114,7 +114,7 @@ All measures are computed from the verified log (hash chain), never from what th
 
 **Validation of the analysis (Type I error):** on a complete rehearsal with simulated models (8 × 40 runs), the primary analysis was repeated 200 times with condition labels randomly permuted across runs. Result (`scripts/type1_check.py`, 2,000 permutations per test, rehearsal `study1-20261022-110346-mock` with the v0.3 code): 4.75% of tests significant before Holm and 0.9% after; family-wise error rate 24.5% uncorrected and **5.5% with Holm** (Monte Carlo error ±1.6 pp, consistent with the nominal 5%). **With the v0.5 code** (rehearsal `study1-20261023-103718-mock`, 8 × 40 runs, same procedure): 4.3% of tests significant before Holm and 0.6% after; family-wise error rate 20.5% uncorrected and **2.5% with Holm** (Monte Carlo error ±1.1 pp with 200 repetitions), within the nominal 5%.
 
-**Secondary:** mixed model (`lme4::glmer` in R) at the agent-round level, with condition and model as fixed effects and random intercepts for run and agent. Per-model analysis (Llama, Gemma, Ministral) as descriptive.
+**Secondary:** mixed model (`lme4::glmer` in R) at the agent-round level, with condition and model as fixed effects and random intercepts for run and agent. If it does not converge with that structure, the run-level random intercept is kept, the agent-level one is dropped, and this is reported (this rule is in the registered OSF form, "Statistical models"; the attached v0.6 document did not state it). Per-model analysis (Llama, Gemma, Ministral) as descriptive.
 
 **Exploratory (declared as such):**
 - H vs C (effect of the voted adoption and the "we" framing), H vs B (effect of reasons), G vs B (effect of prohibition), and all other comparisons.
