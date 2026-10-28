@@ -1,6 +1,6 @@
 # Genethia — Preregistration of Study 1 (draft v0.6, English)
 
-**Status:** draft for review (Guille, sinc(i), Aneley). Not yet registered.
+**Status:** **registered on OSF on 27 October 2026** (OSF Preregistration template): https://osf.io/hkym4, project https://osf.io/yg6a8. The registered version is this v0.6 document with the code at commit `db2eb44`.
 **Version:** v0.6 (27 Oct 2026): second coder frozen (`microsoft/phi-4`, 44/44 on the fixed set); calendar: registered and run from 27 October 2026 without the review by sinc(i), who did not reply; Type I check result with the v0.5 code.
 v0.5 (23 Oct 2026): content equalised across B, G, C and H; "ratification" renamed "voted adoption", and agents see the result; norm-comprehension question and coding corrected, with tests and a second coder; O1 and O2 defined with their exact aggregation; seed-paired analysis as sensitivity; minimum detectable effect in percentage points; denominator of the 2% rule; new section on scope and limitations. Reason: external reviews (OpenAI and Gemini on v0.4) and a code review on 23 Oct 2026.
 v0.4 (22 Oct 2026): the norm-comprehension check applies only to B, C, G and H; D is treated like A, E and F.

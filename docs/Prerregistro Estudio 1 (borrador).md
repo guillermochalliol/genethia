@@ -1,6 +1,6 @@
 # Genethia — Prerregistro del Estudio 1 (borrador v0.6)
 
-**Estado:** borrador para revisión (Guille, sinc(i), Aneley). Todavía no está registrado.
+**Estado:** **registrado en OSF el 27/10/2026** (plantilla OSF Preregistration): https://osf.io/hkym4, proyecto https://osf.io/yg6a8. La versión registrada es la v0.6 en inglés con el código del commit `db2eb44`; esta copia en castellano es una traducción y, si difieren, prevalece la registrada.
 **Versión:** v0.6 (27/10/2026): segundo codificador congelado (`microsoft/phi-4`, 44/44 en el conjunto fijo); calendario: se registra y se corre desde el 27/10/2026 sin la revisión de sinc(i), que no respondió; resultado del chequeo de error tipo I con el código de v0.5.
 v0.5 (23/10/2026): contenido igualado entre B, G, C y H; "ratificación" pasa a llamarse "adopción votada" y los agentes ven el resultado; pregunta y codificación del chequeo de normas corregidas, con tests y segundo codificador; O1 y O2 definidas con su agregación exacta; análisis emparejado por semilla como sensibilidad; efecto mínimo detectable en puntos porcentuales; denominador de la regla del 2%; nueva sección de alcance y limitaciones. Motivo: revisiones externas (OpenAI y Gemini sobre v0.4) y lectura del código del 23/10/2026.
 v0.4 (22/10/2026): el chequeo de comprensión de normas aplica solo a B, C, G y H; D se trata como A, E y F.
