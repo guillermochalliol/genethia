@@ -114,7 +114,8 @@ Most documentation is in Spanish. The preregistration and the closing report als
 
 ## Study 1 results
 
-- **Preregistration:** [osf.io/hkym4](https://osf.io/hkym4), registered on 27 Oct 2026 and embargoed until 1 Oct 2027. Frozen code: commit `db2eb44`.
+- **Preregistration:** [osf.io/hkym4](https://osf.io/hkym4), registered on 27 Oct 2026 (public since 28 Oct 2026). Frozen code: commit `db2eb44`.
+- **Data, frozen code and report:** OSF project [doi:10.17605/OSF.IO/YG6A8](https://doi.org/10.17605/OSF.IO/YG6A8), folder "Study 1 results".
 - **Execution:** 320/320 valid runs, no exclusions, USD 5.17.
 - **Manipulation check: failed** for B, C and G. Agents were asked what their norms said about announcing; most answered "you must announce how many fish you took" without mentioning truthfulness. Under the registered rule, the confirmatory contrasts are not interpreted. The diagnosis (an open-ended question plus a keyword coder) is in the closing report.
 - **Exploratory:** the persona with no moral content (F) was the worst condition on every measure:
